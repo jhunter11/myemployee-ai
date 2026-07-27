@@ -1,0 +1,10 @@
+{
+  "sessionMinutes": 60,
+  "signInMinutes": 2,
+  "uploadMinutes": 6,
+  "verifyMinutes": 2,
+  "signOutMinutes": 1,
+  "requireSignOut": true,
+  "maxAccountsPerSession": 8,
+  "maxUploadsPerAccount": 3
+}

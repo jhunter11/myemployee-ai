@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 1,
+  "description": "Indexable map of remaining work for both Jarvis commercial lanes. Queue rows carry only bounded metadata; this manifest holds the human-readable content they reference via artifactRef 'work-index:<id>'.",
+  "generatedAt": "2026-07-21T00:00:00.000Z",
+  "tenantId": "jarvis",
+  "conventions": {
+    "payloadKind": "project_task is machine-executable by an autonomous worker. operator_gate is human-only and is structurally invisible to workers that claim with payloadKinds:['project_task'].",
+    "band": "P0 never auto-runs. P1 requires approval to land. P2 opens a PR. P3 may auto-merge. Bands mirror config/escalation-policy.json.",
+    "score": "base_score = impact*4 + urgency*5 + (11-effort), enforced as a CHECK constraint in work_queue_tasks."
+  },
+  "tasks": [
+    {
+      "id": "tm.gate.disk-reformat-approval",
+      "lane": "task_market",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Approve and perform the JHREMOVABLE reformat to APFS",
+      "summary": "The external 1.8 TiB volume is FAT32 (msdos, mounted noowners) and holds ~738 GiB of ws_ticks data. FAT32 gives no POSIX locking (SQLite corruption risk), no permission enforcement (0700 state and Umask=0077 become meaningless), a 4 GiB file cap, and no exec bits or symlinks. Back up anything needed, then run: diskutil eraseDisk APFS JHREMOVABLE /dev/disk4",
+      "evidence": "diskutil info /Volumes/JHREMOVABLE -> File System Personality: MS-DOS FAT32; mount -> noowners",
+      "acceptance": "diskutil info reports APFS and the mount no longer shows noowners.",
+      "policy": {
+        "band": "P0",
+        "impact": 8,
+        "urgency": 8,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.disk-headroom",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Free 25 GiB internally to clear DISK_BELOW_MINIMUM",
+      "summary": "Internal disk is at 14.5% free (67 GiB of 460 GiB); the scout admission gate requires 20% (~92 GiB). Offload bulk data to the reformatted external volume: ~/.ollama (15G), ~/Library/Caches (5.4G), Docker images. Keep the repo, state/, and all SQLite on internal APFS.",
+      "evidence": "anchor:tm.admission.disk-floor; live scout returns DISK_BELOW_MINIMUM",
+      "acceptance": "runtime-audit.sh no longer reports diskGuard=warn, and the scout's only remaining denial reason is FOREGROUND_NOT_QUIET.",
+      "constraint": "Never lower DISK_FREE_MINIMUM_PERCENT to make the gate pass.",
+      "policy": {
+        "band": "P1",
+        "impact": 9,
+        "urgency": 9,
+        "effort": 3
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.fix.lint-assertion",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Fix the unnecessary type assertion blocking the release gate",
+      "summary": "One @typescript-eslint/no-unnecessary-type-assertion error on `recordedSettlements.keys().next().value as string | undefined`. This is the first domino: an autonomous worker gated on a green release gate cannot run any task until lint passes.",
+      "evidence": "src/task-market/x402-runtime.ts:503",
+      "acceptance": "npm run lint exits 0.",
+      "policy": {
+        "band": "P3",
+        "impact": 6,
+        "urgency": 9,
+        "effort": 1
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.fix.mcp-batch-amplification",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Reject JSON-RPC arrays at POST /mcp",
+      "summary": "The MCP endpoint hands the parsed body to StreamableHTTPServerTransport, which accepts a JSON-RPC array and dispatches every element independently. A measured 51 KB batch of 230 tools/call entries drove 230 separate entries into the paid gate under a single HTTP request, defeating nginx rate=30r/m and turning it into ~6,900 tool invocations/min/IP, each an outbound facilitator POST. Reject Array.isArray(request.body) with a 400 JSON-RPC error before calling transport.handleRequest, and lower client_max_body_size for the /mcp location specifically.",
+      "evidence": "anchor:tm.mcp.batch-surface; deploy/task-market/nginx.seller.conf:33",
+      "acceptance": "A batched array request returns 400 without reaching the payment wrapper, covered by a regression test.",
+      "policy": {
+        "band": "P1",
+        "impact": 9,
+        "urgency": 7,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.fix.deploy-untracked",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Commit deploy/ to version control",
+      "summary": "The entire deployment surface \u2014 compose.seller.json, nginx.seller.conf, facilitator-relay.mjs, README.md, the env example \u2014 exists only as untracked working-tree state. There is no reviewable history for the artifacts that define the public security boundary.",
+      "evidence": "git status shows deploy/ as untracked",
+      "acceptance": "git status is clean for deploy/ and the files are in HEAD.",
+      "policy": {
+        "band": "P3",
+        "impact": 5,
+        "urgency": 7,
+        "effort": 1
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.fix.readme-compose-contradiction",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Reconcile the README network diagram with the compose file",
+      "summary": "deploy/task-market/README.md describes a HOST TLS proxy forwarding to 127.0.0.1:4021, but compose.seller.json defines a CONTAINERIZED proxy reaching the seller at 172.30.0.3:4021 and publishes no seller port at all. Two of the README's own verification commands therefore fail. Pick one topology and make both documents agree.",
+      "evidence": "deploy/task-market/README.md vs deploy/task-market/compose.seller.json:20,196",
+      "acceptance": "Every command in the README's validation and compromise-drill sections runs against the actual profile without error.",
+      "policy": {
+        "band": "P2",
+        "impact": 6,
+        "urgency": 5,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.fix.nginx-hostname-placeholder",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Give __TASK_MARKET_PUBLIC_HOSTNAME__ a renderer",
+      "summary": "The nginx config contains a placeholder with no renderer and no environment variable. Left unreplaced it does not fail loudly \u2014 nginx silently returns 444 to all traffic, which reads as a network problem rather than a config error.",
+      "evidence": "deploy/task-market/nginx.seller.conf",
+      "acceptance": "A render step substitutes the hostname and a pre-flight check refuses to proceed if any __PLACEHOLDER__ survives.",
+      "policy": {
+        "band": "P2",
+        "impact": 6,
+        "urgency": 5,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.verify.compose-validation",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "verify",
+      "title": "Install compose v2 and actually validate the seller profile",
+      "summary": "docker compose v2 is not installed on this host, so compose.seller.json has never been schema-validated. It was reviewed by reading only.",
+      "evidence": "docker compose -> unknown command; no cli-plugins directory",
+      "acceptance": "docker compose -f deploy/task-market/compose.seller.json config --quiet exits 0 with a rendered env file.",
+      "policy": {
+        "band": "P2",
+        "impact": 6,
+        "urgency": 5,
+        "effort": 1
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.scout-durable-output",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Give the scout durable output and persistent quota accounting",
+      "summary": "The scout produces no durable record and nothing consumes its candidates, so even once the disk gate clears, the hourly loop is a no-op. Quota counters are read from env and never written back, so every tick restarts at zero and the request ceiling is not actually enforced across runs.",
+      "evidence": "src/task-market/scout-live-signals.ts quota read path; no candidate writer in src/task-market/",
+      "acceptance": "Consecutive ticks show correctly decrementing quota and durable, bounded candidate records readable by the dashboard.",
+      "policy": {
+        "band": "P2",
+        "impact": 7,
+        "urgency": 6,
+        "effort": 4
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.scout-launchd-hardening",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Harden the scout scheduler into a launchd StartInterval agent",
+      "summary": "The hourly loop currently runs from a Codex automation, which is model-mediated and requires Codex.app to be alive. Add a create_scout_plist() to scripts/runtime/install-launch-agent.sh mirroring create_watchdog_plist(), using StartInterval rather than KeepAlive so the fail-closed CLI exit is treated as normal.",
+      "evidence": "~/.codex/automations/jarvis-downtime-revenue-scout/automation.toml; scripts/runtime/install-launch-agent.sh:325",
+      "acceptance": "A scout plist installs, passes plutil -lint, and fires on interval independently of Codex.app.",
+      "policy": {
+        "band": "P2",
+        "impact": 4,
+        "urgency": 3,
+        "effort": 3
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.zone3-capability-issuer",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Build the Ed25519 job capability issuer (pure)",
+      "summary": "Emit a detached-signature capability: schemaVersion, jobId, adapterId from a hardcoded allowlist, inputDigest, marketplaceId, taskId, notBefore, notAfter (<=15min), maxWallClockSeconds, maxBytesOut, maxPaymentBaseUnits '0', nonce, sig. Signing key stays in Jarvis; the executor holds only the public key. Reuse the binding logic in submission-authorization.ts:116. Pure and fully testable with no VM.",
+      "evidence": "docs/revenue/task-market/SPEC.md:96-117 mandates zone 3; grep -rniE 'executor|broker|quarantine' src/ returns nothing",
+      "acceptance": "Signature verification, expiry, allowlist rejection, and tamper detection are covered by tests. No VM involved.",
+      "policy": {
+        "band": "P1",
+        "impact": 8,
+        "urgency": 5,
+        "effort": 5
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.zone3-quarantine-validator",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Build the quarantine import validator (pure)",
+      "summary": "Independent validation before anything from the executor enters Jarvis: schema, digests, provenance, size and shape bounds, and content policy. Result retrieval is not trust transfer. Never import an executable, symlink, archive, raw request body, or unbounded log. Pure and testable offline.",
+      "evidence": "docs/revenue/task-market/SPEC.md:109-110",
+      "acceptance": "Malformed, oversized, wrong-digest, wrong-provenance, and hostile-payload fixtures are all rejected, with tests.",
+      "policy": {
+        "band": "P1",
+        "impact": 8,
+        "urgency": 5,
+        "effort": 5
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.build.zone3-broker",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Build the pull-only job broker",
+      "summary": "Deliberately dumb and assumed compromised. Two sides: Jarvis posts one signed capability; the executor polls for next and posts a bounded result. The broker validates nothing semantic, never learns the signing key, and never holds a Jarvis credential. Bodies capped. Never hosted on the Jarvis host.",
+      "evidence": "docs/revenue/task-market/SPEC.md:104-108",
+      "acceptance": "Broker cannot forge, read, or escalate a capability; body caps and auth separation covered by tests.",
+      "policy": {
+        "band": "P1",
+        "impact": 8,
+        "urgency": 4,
+        "effort": 6
+      },
+      "dependencies": [
+        "tm.build.zone3-capability-issuer",
+        "tm.build.zone3-quarantine-validator"
+      ]
+    },
+    {
+      "id": "tm.build.zone3-executor-profile",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Stand up the isolated executor colima profile and job runner",
+      "summary": "colima start --profile tm-exec --cpu 2 --memory 4 --disk 20 --mount none --network-address=false, verified with colima ssh --profile tm-exec -- ls /Users returning empty. Per-job containers: --rm --network <internal> --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 64 --memory 512m --cpus 1 --user 65534:65534 --tmpfs /tmp. Never the default profile, which mounts the home directory read-write including SSH keys.",
+      "evidence": "~/.colima/default/colima.yaml mounts /Users/jackhunter rw; containers on the default bridge reach Jarvis at 192.168.5.2:3000",
+      "acceptance": "A job runs to completion in tm-exec, writes only to quarantine, and the profile has no host mount.",
+      "policy": {
+        "band": "P1",
+        "impact": 9,
+        "urgency": 4,
+        "effort": 6
+      },
+      "dependencies": [
+        "tm.build.zone3-broker"
+      ]
+    },
+    {
+      "id": "tm.verify.container-cannot-reach-jarvis",
+      "lane": "task_market",
+      "kind": "project_task",
+      "taskType": "verify",
+      "title": "Make the compromise drill an executable test",
+      "summary": "The only current evidence for zone isolation is a test that regex-matches README prose \u2014 a documentation spell-check that passes green and attests to nothing. Replace it with a real drill: run a throwaway container and assert it CANNOT reach 192.168.5.2:3000, plus RFC1918, link-local, and 169.254.169.254.",
+      "evidence": "tests/task-market/vps-deployment-profile.test.ts:373-393 regex-matches deploy/task-market/README.md",
+      "acceptance": "The drill fails loudly if a route to Jarvis is ever reconstituted by a stray docker run.",
+      "policy": {
+        "band": "P1",
+        "impact": 9,
+        "urgency": 6,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.gate.seller-vps-provisioning",
+      "lane": "task_market",
+      "kind": "operator_gate",
+      "gateType": "security",
+      "title": "Provision the seller VPS, DNS, TLS, and receive address",
+      "summary": "Human-only and unobtainable by any agent: a VPS in a separate provider account, a DNS A record, a DNS-01 TLS certificate, a public Base Sepolia receive address, and a published image digest. The public seller must not run on this Mac \u2014 it needs 443 ingress and public DNS, and port-forwarding a residential connection exposes the home IP and puts the internet-facing surface on the control-plane machine.",
+      "evidence": "deploy/task-market/task-market.testnet.env.example lists 8 required substitutions; 13 external inputs total, none satisfied",
+      "acceptance": "All 13 external inputs satisfied and a pre-flight script passes with no surviving placeholder.",
+      "policy": {
+        "band": "P0",
+        "impact": 9,
+        "urgency": 3,
+        "effort": 8
+      },
+      "dependencies": []
+    },
+    {
+      "id": "tm.gate.testnet-payment-release",
+      "lane": "task_market",
+      "kind": "operator_gate",
+      "gateType": "release",
+      "title": "Approve enabling public work and the first Base Sepolia payment",
+      "summary": "TASK_MARKET_ACCEPTING_WORK stays false through TLS, firewall, request limits, logs, backups, and the compromise drill. Flipping it is an explicit operator decision, and a second decision gates the payment itself. Mainnet is permanently out of scope.",
+      "evidence": "deploy/task-market/compose.seller.json:119 defaults the kill switch false",
+      "acceptance": "One end-to-end Base Sepolia payment reconciled against the settlement ledger. Testnet produces no recognized revenue.",
+      "policy": {
+        "band": "P0",
+        "impact": 9,
+        "urgency": 2,
+        "effort": 5
+      },
+      "dependencies": [
+        "tm.gate.seller-vps-provisioning",
+        "tm.verify.container-cannot-reach-jarvis"
+      ]
+    },
+    {
+      "id": "ag.gate.icp-decision",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Gate 0 founder decisions: ICP, positioning, sender identity",
+      "summary": "Confirm the dual-track strategy, choose the Company Intelligence beachhead (recommended: 25-250 person, non-regulated, knowledge-heavy B2B with a clear Ops/IT/Support/Engineering owner), decide whether owning model weights is a requirement (recommendation: stay provider-neutral and retrieval-first), and choose a legal sender identity, business address, mailbox, and bookkeeping owner. Everything downstream in this lane depends on these.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 0",
+      "acceptance": "One ICP, buyer, promise, boundary, and commercial owner written and approved.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 8,
+        "effort": 3
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.gate.discovery-interviews",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Gate 1: conduct 5-10 Company Intelligence discovery interviews",
+      "summary": "Human-only. Use the discovery questions in company-intelligence/PILOT.md. Ask for a 20-minute knowledge-friction interview, not access to data. This is the highest-value action in the entire agency lane and no agent can do it. The product thesis rests on whether the repeated-question problem is real and someone owns it.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 1; docs/revenue/company-intelligence/PILOT.md discovery questions",
+      "acceptance": "A design partner exists, or evidence to reject or refine the hypothesis.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 9,
+        "effort": 6
+      },
+      "dependencies": [
+        "ag.gate.icp-decision"
+      ]
+    },
+    {
+      "id": "ag.plan.ci-connectors",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "research",
+      "title": "Write CONNECTORS.md",
+      "summary": "Per source (Outlook/Graph, Slack, Drive, Jira, Confluence, repos): auth model, permission model, rate limits, change and deletion detection, content types, PII exposure, injection surface, effort. Verify API capabilities against current vendor documentation rather than asserting from memory. Rank by value-to-risk and recommend a first connector with reasoning.",
+      "evidence": "docs/revenue/company-intelligence/PILOT.md excludes arbitrary connectors from V1",
+      "acceptance": "Every source has a documented ACL propagation story and injection assessment.",
+      "policy": {
+        "band": "P2",
+        "impact": 7,
+        "urgency": 6,
+        "effort": 4
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.plan.ci-data-model",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Write DATA-MODEL.md",
+      "summary": "The normalization and SQL logging design. Canonical document and chunk schema with source, version, owner, timestamps, checksum, classification, tombstone state. Client-private Q&A and feedback store separated from the global run ledger. An explicit never-log list: raw source content, question and answer text, excerpts, and credentials must never reach global memory, the dashboard, request logs, or model telemetry.",
+      "evidence": "docs/revenue/company-intelligence/PILOT.md acceptance contract",
+      "acceptance": "Schema supports deletion within the refresh window and survives interrupted ingestion without losing the last complete index.",
+      "policy": {
+        "band": "P2",
+        "impact": 8,
+        "urgency": 6,
+        "effort": 4
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.plan.ci-autonomy-ladder",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Write AUTONOMY-LADDER.md",
+      "summary": "Five rungs: read-only single corpus; read-only multi-source connected; suggestive (drafts, human sends); bounded agentic (reversible allowlist, audit record, stop control); broadly agentic (out of scope until 1-4 have production evidence). Each rung needs its own threat model, controls, acceptance tests, and pricing implication. Connected and agentic are two independent jumps that fail differently.",
+      "evidence": "docs/revenue/company-intelligence/PILOT.md V1 excludes workflow actions",
+      "acceptance": "Each rung has a security argument that stands on its own.",
+      "policy": {
+        "band": "P2",
+        "impact": 8,
+        "urgency": 5,
+        "effort": 3
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.plan.ci-pricing-gtm",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "research",
+      "title": "Write PRICING.md, GTM.md, and COMPETITIVE.md",
+      "summary": "Commercial shape: fixed audit + one-time implementation + recurring hosting/support + metered provider and index cost + contingency and margin. Publish no price until PILOT.md's measurement inputs are known. Competitive scan of Glean, Dashworks, Danswer/Onyx, Microsoft Copilot, Slack AI, and build-it-yourself \u2014 honest about where a small agency wins and where it does not.",
+      "evidence": "docs/revenue/company-intelligence/PILOT.md pricing inputs; agency-launch-roadmap.md message hierarchy",
+      "acceptance": "No unmeasured latency, accuracy, cost, or ROI figure appears anywhere.",
+      "policy": {
+        "band": "P2",
+        "impact": 7,
+        "urgency": 5,
+        "effort": 4
+      },
+      "dependencies": [
+        "ag.plan.ci-connectors",
+        "ag.plan.ci-data-model"
+      ]
+    },
+    {
+      "id": "ag.build.gold-set-synthetic-corpus",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Build the synthetic corpus and 30-50 question gold set",
+      "summary": "Gate 3 prerequisite. Cover answerable, ambiguous, missing, stale and conflicting, prohibited, and adversarial questions. The adversarial set must include prompt injection through ingested content from day one \u2014 a pilot that has not been attacked has not been tested. Synthetic documents only; no real client data before the Gate 4 signed boundary.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 3; company-intelligence/PILOT.md acceptance contract",
+      "acceptance": "Gold set is frozen, covers all six question classes, and includes injection fixtures.",
+      "policy": {
+        "band": "P2",
+        "impact": 8,
+        "urgency": 4,
+        "effort": 6
+      },
+      "dependencies": [
+        "ag.plan.ci-data-model"
+      ]
+    },
+    {
+      "id": "ag.gate.legal-sender-identity",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Choose legal sender identity, address, mailbox, and bookkeeping owner",
+      "summary": "Root blocker for the first dollar. Without a legal sender identity and a business address you cannot lawfully send B2B outreach, and without a bookkeeping owner you cannot recognise revenue. Human-only: may require an LLC or DBA, a business address, a sender mailbox, and a bank account.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 0, unchecked",
+      "acceptance": "A legal sender identity, business address, sender mailbox, and bookkeeping owner are written down and approved.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 10,
+        "effort": 4
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.gate.payment-collection",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "budget",
+      "title": "Establish how $750 actually arrives and is recorded",
+      "summary": "Gate 2 requires manual invoice and payment evidence plus bookkeeping; x402 is explicitly not required. Today there is no invoicing path, so a signed client could not pay. Decide the invoicing tool, payment method, terms, and where the evidence is filed.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 2, unchecked",
+      "acceptance": "A test invoice can be issued and its payment recorded end to end without improvisation.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 9,
+        "effort": 3
+      },
+      "dependencies": [
+        "ag.gate.legal-sender-identity"
+      ]
+    },
+    {
+      "id": "ag.build.revenue-operator-cli",
+      "lane": "agency",
+      "kind": "project_task",
+      "taskType": "build",
+      "title": "Build the revenue state-machine operator CLI",
+      "summary": "Gate 2 calls for an operator CLI covering qualification, offer, draft, opt-out, and audit transitions. revenue_offers and revenue_outreach_drafts are both empty partly because nothing can write them. Gate 1 asks to record one discovery-ready draft through the state machine, which is impossible without this. Sending stays a separate manual action.",
+      "evidence": "docs/revenue/agency-launch-roadmap.md Gate 2; revenue_offers and revenue_outreach_drafts both contain 0 rows",
+      "acceptance": "A prospect can be moved identified -> qualified, an offer recorded, and a draft recorded, with audit events, and no send path exists in the CLI.",
+      "policy": {
+        "band": "P2",
+        "impact": 8,
+        "urgency": 7,
+        "effort": 4
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.gate.revalidate-prospect",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Manually revalidate one roofing prospect and its permitted channel",
+      "summary": "Ten prospects are identified and none is qualified. Re-open the chosen business's official site, confirm current facts, and confirm a permitted business-contact channel. A homeowner quote form is not permission.",
+      "evidence": "revenue_prospects holds 10 rows, all status identified; docs/revenue/outreach-drafts.md compliance gate",
+      "acceptance": "One prospect has verified current business facts and a documented permitted contact channel.",
+      "policy": {
+        "band": "P0",
+        "impact": 9,
+        "urgency": 9,
+        "effort": 2
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ag.gate.approve-first-outreach",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Clear the five send-gate approvals and send one message manually",
+      "summary": "first-client-pack.json sets sendGate.state to blocked_pending_operator_review with automationMaySend false, formsMayBeSubmitted false, and callsMayBePlaced false. Five approvals are required, covering re-verification, channel terms and law, sender identity, exact recipient and body, and a single-message approval record. Editing the message invalidates the approval.",
+      "evidence": "docs/revenue/first-client-pack.json sendGate.requiredApprovals",
+      "acceptance": "One message is approved and sent manually, with the approval recorded for that message only.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 8,
+        "effort": 2
+      },
+      "dependencies": [
+        "ag.gate.revalidate-prospect",
+        "ag.gate.legal-sender-identity"
+      ]
+    },
+    {
+      "id": "ag.gate.discovery-and-demo",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "approval",
+      "title": "Run discovery, qualify, and show the synthetic demo",
+      "summary": "A public fit score is not discovery. Qualify the workflow against offer-and-qualification.md, then show the ten-minute synthetic proof from demo-runbook.md. The acme_corp fixture is verified working: 10 rows, 5 deterministic qualified, 46 passing tests. Never request prospect data for the demo. Disqualify if there is no workflow owner, budget, or bounded export.",
+      "evidence": "docs/revenue/demo-runbook.md; tests/clients/acme-corp-daily-report.test.ts passes 46 tests",
+      "acceptance": "One buyer completes discovery and sees the demo, and is either qualified or explicitly disqualified.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 7,
+        "effort": 3
+      },
+      "dependencies": [
+        "ag.gate.approve-first-outreach"
+      ]
+    },
+    {
+      "id": "ag.gate.sign-scope-and-invoice",
+      "lane": "agency",
+      "kind": "operator_gate",
+      "gateType": "release",
+      "title": "Sign the scope and collect the first $750",
+      "summary": "Sign scope, boundary, retention, deletion, success tests, and stop procedure per objections-and-acceptance.md before accepting any real data. The offer bills 750 USD for the founding month, monthly in advance after a signed scope. Collecting this is the first dollar.",
+      "evidence": "docs/revenue/first-client-pack.json offer.foundingPilot; docs/revenue/objections-and-acceptance.md",
+      "acceptance": "A signed scope exists and a 750 USD payment is received and recorded as recognized revenue.",
+      "policy": {
+        "band": "P0",
+        "impact": 10,
+        "urgency": 6,
+        "effort": 4
+      },
+      "dependencies": [
+        "ag.gate.discovery-and-demo",
+        "ag.gate.payment-collection"
+      ]
+    }
+  ]
+}

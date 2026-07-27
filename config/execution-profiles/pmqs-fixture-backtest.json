@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "id": "offline_compute",
+  "commandId": "pmqs-fixture-backtest-v1",
+  "network": "none",
+  "timeoutMs": 10000,
+  "maxOutputBytes": 65536,
+  "source": {
+    "repository": "jhunter11/pmqs",
+    "commit": "6fbd6d4fe0b9b17c18d5560fb1507a6cd66ac6d4",
+    "tree": "8cf4d1fd58e29c44fc537d19739c1135ed76987e",
+    "directory": "pmqs-6fbd6d4fe0b9b17c18d5560fb1507a6cd66ac6d4",
+    "digest": "4316095c1fc9d67d07e10249e87021feba070ffa7951fce489457835cd7c76bb",
+    "files": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "bytes": 701,
+        "sha256": "5fdafe74903060f6cf6d2b8d59eb3f7503767bb0c4f23f43d2401f6850db000e"
+      },
+      {
+        "path": ".gitignore",
+        "bytes": 209,
+        "sha256": "ee9b82e2c3e93035ddf5278285a262fdf9d4924304978a9b4edd4f1756a5c56f"
+      },
+      {
+        "path": "CONTRIBUTING.md",
+        "bytes": 816,
+        "sha256": "336bd2f8883b68316f4af6053db196e88f2c748eb28615b2536fce2c26241c3b"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 1074,
+        "sha256": "e32c5f1b35ae81c5e5cfbb32bc8ccd5ad0ee5c75678b9a0039c83baf24a235e1"
+      },
+      {
+        "path": "README.md",
+        "bytes": 7455,
+        "sha256": "bc0bc54a90aa8ad625af73f0ddb4371ad07b609d6f991dce743d865e45ecdd36"
+      },
+      {
+        "path": "SECURITY.md",
+        "bytes": 685,
+        "sha256": "b93c3b55592a87f9d1f183676c6f919f0cccd145d48b832bc7a167f2722b3c55"
+      },
+      {
+        "path": "docs/posts/01-why-your-backtest-is-lying.md",
+        "bytes": 4390,
+        "sha256": "822a8529f4e61acafd6a033df7dc472e07a3cb67d8030b5e7dfbcefb37eaa90d"
+      },
+      {
+        "path": "docs/posts/02-kalshi-fees-explained.md",
+        "bytes": 3694,
+        "sha256": "a5af72b8cc397b5c555f510d4dd1e5c6cb72d3f740a3df40bb3369d847f79f81"
+      },
+      {
+        "path": "docs/posts/03-orderbook-semantics.md",
+        "bytes": 3447,
+        "sha256": "819eb8ec4152da0b7f6dd79f08367a5c09238a76ba17d70a774ebc53b5bcdbf2"
+      },
+      {
+        "path": "docs/posts/04-paper-trade-zero-network.md",
+        "bytes": 3870,
+        "sha256": "98759a5c0f0c0db7e7ed6bc48f524c408a0fffc2c3f0900132210a1b1a660632"
+      },
+      {
+        "path": "docs/posts/05-closing-line-value.md",
+        "bytes": 3465,
+        "sha256": "9f459774d434be034e879bfca8c76a4a8b79f761a96d1e66e89745f32185fb24"
+      },
+      {
+        "path": "docs/posts/06-we-backtested-buy-cheap-yes.md",
+        "bytes": 3526,
+        "sha256": "c4a7f960f9e324b6bb451360d2e717e75bca93f1450348de93ec4c8e4efcf3ce"
+      },
+      {
+        "path": "docs/posts/07-thirty-markets-is-a-floor.md",
+        "bytes": 3570,
+        "sha256": "c648c4a062337be3306ee555f2322f7ba05ba7579c35e761930314fb351a09a5"
+      },
+      {
+        "path": "docs/posts/08-stale-price-fake-edge.md",
+        "bytes": 4054,
+        "sha256": "33f7e4a8bf07ea04b2187f9f8fd50e9c9be1229044a1483490bfc3dfbfcf580d"
+      },
+      {
+        "path": "docs/posts/README.md",
+        "bytes": 1008,
+        "sha256": "179875544f7b0a1b66ced772030177ce2e5ecc2f7c79183ce2cd6d5a4ff5b7c6"
+      },
+      {
+        "path": "docs/validation-playbook.md",
+        "bytes": 3226,
+        "sha256": "fb683db64a8145ce7ab9ddacb85c9f170f78975b6e25487ab488c496e4e133c7"
+      },
+      {
+        "path": "examples/run_fixture_backtest.py",
+        "bytes": 1335,
+        "sha256": "acdc281cb42fd0404df0b2ca9ca9ecbbff22d077c5e26b1b6287dce17a83b5e3"
+      },
+      {
+        "path": "pyproject.toml",
+        "bytes": 1146,
+        "sha256": "08a6d237cc753a704d3f320a4446883ed89ebbea13fdbef9b2745374563db7cd"
+      },
+      {
+        "path": "src/pmqs/__init__.py",
+        "bytes": 1252,
+        "sha256": "c86b77ae150eee1f31ebc49b3737be6c220e49e9ee077b2fc2b8e7e328b43e89"
+      },
+      {
+        "path": "src/pmqs/capture.py",
+        "bytes": 6063,
+        "sha256": "2ec77b69d009ff6831039628b4e00a9bd3c7ad37f269a0aafc67442a5da2e2e2"
+      },
+      {
+        "path": "src/pmqs/fees.py",
+        "bytes": 3291,
+        "sha256": "d00def2917fafabaaec382ac3ffd63a096f6b7e1de1a299b76d514db9d96d039"
+      },
+      {
+        "path": "src/pmqs/fills.py",
+        "bytes": 4506,
+        "sha256": "b95320622b72758ec26656790fcb46e80b09e3da4fd8d9ded58970d3c1b6f572"
+      },
+      {
+        "path": "src/pmqs/fixtures.py",
+        "bytes": 3399,
+        "sha256": "e03e850bb8e209c81034c0142160115a4b6fedeefd0ca799091ece8fd37ba465"
+      },
+      {
+        "path": "src/pmqs/ledger.py",
+        "bytes": 3778,
+        "sha256": "5aa53c3ddbd4007a3485922b747d4124dc206de0e6243d64817ec6ce916f33db"
+      },
+      {
+        "path": "src/pmqs/markout.py",
+        "bytes": 3250,
+        "sha256": "7ec02aef00d72b521bdb2810c2a2656cbe936f00a7ace2b3cf3751f55ddc4c98"
+      },
+      {
+        "path": "src/pmqs/orderbook.py",
+        "bytes": 6530,
+        "sha256": "d60ebb8416c04578336f07f66cee03d6a14fe4b58f7819b8fe368ac44411d9c7"
+      },
+      {
+        "path": "src/pmqs/replay.py",
+        "bytes": 4700,
+        "sha256": "696a29a32a8fc2345f89fa9d5f47edd4d9bc25ec5014651434c0617ff9058dad"
+      },
+      {
+        "path": "src/pmqs/strategy.py",
+        "bytes": 1852,
+        "sha256": "9e08acc4202241059b42e0d8233c98654da6b1662d869db5f24a0823506399fb"
+      },
+      {
+        "path": "src/pmqs/validate.py",
+        "bytes": 4386,
+        "sha256": "129e4d9a5ed1e929eb8c1aaed97d82a3cc0973b57083548643df6ad7b6ac0ade"
+      },
+      {
+        "path": "tests/test_capture.py",
+        "bytes": 1402,
+        "sha256": "28b7245e1546ba3d637800d82d26ff703f07faf56d9c1721634700b14f249a37"
+      },
+      {
+        "path": "tests/test_fees.py",
+        "bytes": 2559,
+        "sha256": "8e3e1039fea2ade03b09471e5757ecee18c225b9b54b0a042116eb15657a2b6c"
+      },
+      {
+        "path": "tests/test_fills.py",
+        "bytes": 2464,
+        "sha256": "88e55ef05d8f0965935035b0b12a92bb12a5bd8ab3666b919e8472602b9363c6"
+      },
+      {
+        "path": "tests/test_ledger.py",
+        "bytes": 2670,
+        "sha256": "1ceb84782825a6d4955b647c4e2c37991eade6b3d22e946657f12c3d014060b7"
+      },
+      {
+        "path": "tests/test_markout.py",
+        "bytes": 1969,
+        "sha256": "0fa0669e247d6f69fe12366394c5c7f75f308f2fb35aa6ae2456b1cf5dce147f"
+      },
+      {
+        "path": "tests/test_orderbook.py",
+        "bytes": 2158,
+        "sha256": "f989f27417ab3aa0ff790634189d6449e5dc8d87fbf9c727fc5adae57409c89e"
+      },
+      {
+        "path": "tests/test_replay.py",
+        "bytes": 3475,
+        "sha256": "a0770dbaf4af5560d7930bff3127b13a225768e7ad0110bc6a758d3850147dcd"
+      },
+      {
+        "path": "tests/test_validate.py",
+        "bytes": 1893,
+        "sha256": "8cb94c994575eaf7b61bf04fb7831e232a1f39aff33d35f3bb2ca42012dd7b22"
+      }
+    ]
+  }
+}

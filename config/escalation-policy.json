@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "description": "Issue severity classification and escalation routing policy",
+  "severities": {
+    "P0": {
+      "label": "Critical",
+      "definition": "Data breach, secrets leaked, client-facing outage, sandbox escape, integrity tamper detected",
+      "agent_action": [
+        "Immediately isolate affected sandbox (docker pause)",
+        "Revoke all runtime secrets for affected client",
+        "Halt all client agent runs",
+        "Generate forensic snapshot of logs and state",
+        "Page owner via ALL channels"
+      ],
+      "notification": {
+        "telegram": true,
+        "telegram_priority": "urgent",
+        "kanban": true,
+        "auto_merge": false,
+        "auto_patch": false
+      },
+      "human_sla": "30 minutes",
+      "auto_containment": true
+    },
+    "P1": {
+      "label": "High",
+      "definition": "Client automation silently failing, billing mis-attribution, test suite broken on main, heartbeat failure, config drift detected",
+      "agent_action": [
+        "Auto-patch if confidence > 90%",
+        "Open PR with detailed diff and test results",
+        "Send Telegram summary with PR link",
+        "Log to Kanban under Automated Bug Reports"
+      ],
+      "notification": {
+        "telegram": true,
+        "telegram_priority": "normal",
+        "kanban": true,
+        "auto_merge": false,
+        "auto_patch": true
+      },
+      "human_sla": "4 hours",
+      "auto_containment": false
+    },
+    "P2": {
+      "label": "Medium",
+      "definition": "Code quality regression, missing tests, deprecated dependency, non-critical config drift, documentation gaps",
+      "agent_action": [
+        "Auto-patch and open PR",
+        "Log to Kanban under Automated Bug Reports",
+        "No direct notification"
+      ],
+      "notification": {
+        "telegram": false,
+        "kanban": true,
+        "auto_merge": false,
+        "auto_patch": true
+      },
+      "human_sla": "Next daily check-in",
+      "auto_containment": false
+    },
+    "P3": {
+      "label": "Low",
+      "definition": "Style/formatting issues, minor documentation typos, non-blocking warnings, log noise",
+      "agent_action": [
+        "Auto-fix and auto-merge directly to main",
+        "No notification of any kind"
+      ],
+      "notification": {
+        "telegram": false,
+        "kanban": false,
+        "auto_merge": true,
+        "auto_patch": true
+      },
+      "human_sla": "None required",
+      "auto_containment": false
+    }
+  },
+  "escalation_channels": {
+    "telegram": {
+      "owner_id": "telegram:5861944930",
+      "urgent_prefix": "🚨 P0 CRITICAL:",
+      "normal_prefix": "⚠️ P1 Alert:"
+    }
+  },
+  "fallback": "If Telegram is unreachable during P0, retry 3 times at 30s intervals. If still unreachable, write to logs/escalation-failures.jsonl and attempt SMS via configured provider."
+}

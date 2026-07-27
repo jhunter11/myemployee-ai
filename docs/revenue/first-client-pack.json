@@ -1,0 +1,256 @@
+{
+  "schema": "jarvis.first-client-pack.v1",
+  "asOf": "2026-07-18",
+  "purpose": "review_only_first_client_acquisition",
+  "segment": {
+    "label": "Independent residential roofing contractors in the Charlotte metro",
+    "buyerRoleHypothesis": "Owner, general manager, or sales operations lead",
+    "workflowHypothesis": "Turn one bounded daily CSV export of inbound estimate leads into a reviewed qualified-lead brief",
+    "marketPainState": "unverified_until_discovery"
+  },
+  "offer": {
+    "name": "Daily Lead Triage Pilot",
+    "blueprintMonthlyRange": {
+      "minimumUsd": 500,
+      "minimumMicrousd": 500000000,
+      "maximumUsd": 2000,
+      "maximumMicrousd": 2000000000
+    },
+    "foundingPilot": {
+      "firstMonthUsd": 750,
+      "firstMonthMicrousd": 750000000,
+      "standardMonthlyUsd": 1250,
+      "standardMonthlyMicrousd": 1250000000,
+      "billing": "monthly_in_advance_after_signed_scope",
+      "minimumTermMonths": 1,
+      "setupFeeUsd": 0,
+      "includedLeadSources": 1,
+      "includedDailyRuns": 31,
+      "includedRevisionRounds": 1,
+      "externalPaymentState": "blocked"
+    }
+  },
+  "sendGate": {
+    "state": "blocked_pending_operator_review",
+    "operatorApprovalRequired": true,
+    "automationMaySend": false,
+    "formsMayBeSubmitted": false,
+    "callsMayBePlaced": false,
+    "requiredApprovals": [
+      "reverify_public_business_and_contact_page",
+      "confirm_contact_channel_terms_and_applicable_law",
+      "confirm_business_identity_and_sender_address",
+      "review_exact_recipient_subject_and_body",
+      "record_operator_approval_for_one_message_only"
+    ]
+  },
+  "prospects": [
+    {
+      "id": "charlotte_haven_roofing",
+      "businessLabel": "Haven Roofing Services",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://www.havenroofingservices.com/contact",
+      "status": "research_only",
+      "qualification": {
+        "score": 4,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": [
+        "https://www.havenroofingservices.com/",
+        "https://www.havenroofingservices.com/contact"
+      ]
+    },
+    {
+      "id": "charlotte_white_oak_roofing",
+      "businessLabel": "White Oak Roofing Group",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://www.whiteoakroofs.com/contact",
+      "status": "research_only",
+      "qualification": {
+        "score": 5,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "published_response_window",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://www.whiteoakroofs.com/", "https://www.whiteoakroofs.com/contact"]
+    },
+    {
+      "id": "charlotte_triumph_roofing",
+      "businessLabel": "Triumph Roofing",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://www.triumphroofingcharlotte.com/contact/",
+      "status": "research_only",
+      "qualification": {
+        "score": 5,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "published_response_window",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": [
+        "https://www.triumphroofingcharlotte.com/",
+        "https://www.triumphroofingcharlotte.com/contact/"
+      ]
+    },
+    {
+      "id": "charlotte_rgs_home_pros",
+      "businessLabel": "RGS Home Pros",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://www.rgshomepros.com/contact/",
+      "status": "research_only",
+      "qualification": {
+        "score": 5,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "published_response_window",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://www.rgshomepros.com/", "https://www.rgshomepros.com/contact/"]
+    },
+    {
+      "id": "charlotte_rock_roofing",
+      "businessLabel": "Rock Roofing & Restoration",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://rockroofingnc.com/contact/",
+      "status": "research_only",
+      "qualification": {
+        "score": 5,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "published_response_window",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://rockroofingnc.com/", "https://rockroofingnc.com/contact/"]
+    },
+    {
+      "id": "charlotte_21_roofing_group",
+      "businessLabel": "21 Roofing Group",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://21roofinggroup.com/contact-us/",
+      "status": "research_only",
+      "qualification": {
+        "score": 4,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://21roofinggroup.com/", "https://21roofinggroup.com/contact-us/"]
+    },
+    {
+      "id": "charlotte_southern_star_roofing",
+      "businessLabel": "Southern Star Roofing",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://southernstarroofing.com/contact/",
+      "status": "research_only",
+      "qualification": {
+        "score": 5,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "published_response_window",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": [
+        "https://southernstarroofing.com/",
+        "https://southernstarroofing.com/contact/"
+      ]
+    },
+    {
+      "id": "charlotte_signature_exteriors",
+      "businessLabel": "Signature Exteriors",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://signatureexteriorsinc.com/contact-us/",
+      "status": "research_only",
+      "qualification": {
+        "score": 4,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": [
+        "https://signatureexteriorsinc.com/residential-roof-services/residential-roofing/",
+        "https://signatureexteriorsinc.com/contact-us/"
+      ]
+    },
+    {
+      "id": "charlotte_gmi_roofing",
+      "businessLabel": "GMI Roofing",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://gmiroofing.com/contact/",
+      "status": "research_only",
+      "qualification": {
+        "score": 4,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://gmiroofing.com/", "https://gmiroofing.com/contact/"]
+    },
+    {
+      "id": "charlotte_roof_repair_inspection_specialist",
+      "businessLabel": "Roof Repair and Inspection Specialist",
+      "locationLabel": "Charlotte metro, NC",
+      "contactPageUrl": "https://www.rrischarlotte.com/contact",
+      "status": "research_only",
+      "qualification": {
+        "score": 4,
+        "maximumScore": 5,
+        "publicSignals": [
+          "residential_roofing",
+          "local_or_regional_footprint",
+          "public_estimate_intake",
+          "storm_or_repair_workflow"
+        ],
+        "discoveryUnknowns": ["lead_volume", "current_system", "budget", "decision_authority"]
+      },
+      "provenanceUrls": ["https://www.rrischarlotte.com/", "https://www.rrischarlotte.com/contact"]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+node_modules/
+dist/
+dist-task-market/
+coverage/
+.eslintcache
+.DS_Store
+
+# Graphify outputs that are host-specific, cached, or usage-local. The
+# portable report remains commit-eligible; indexes and manifests are rebuilt
+# per machine because Graphify records absolute corpus paths.
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.graphify_labels.json
+graphify-out/cache/
+graphify-out/cost.json
+graphify-out/graph.json
+graphify-out/graph.html
+graphify-out/manifest.json
+/src/graphify-out/
+
+# Runtime state
+/data/
+/logs/
+clients/*/memory/*.sqlite
+clients/*/output/*.json
+memory/graph/graph.json
+
+# Local secrets (keep the documented example)
+.env
+.env.*
+!.env.example
+
+# Local browser verification artifacts
+.playwright-mcp/
+.audit-tmp/
+
+# Read-only upstream checkouts kept for design/pattern reference only. Never
+# built, never imported, never deployed. Re-clone rather than commit: see
+# docs/reference-checkouts.md.
+.reference/
+
+# Machine-local Claude Code tooling. Project-authored skills are tracked under
+# skills/ at the repo root; .claude/skills/ holds third-party skillsets a
+# developer installed for themselves, and settings.local.json wires hooks to
+# absolute paths on one machine. The .impeccable/ directory is that tooling's
+# per-host cache.
+.claude/skills/
+.claude/settings.local.json
+.impeccable/hook.cache.json
+
+# Scratch probes and raw capture dumps. Kept on the working branch (force-added
+# there) so nothing is lost, but never on main.
+.bench-probe.ts
+jarvis-model-runtime-mobile.md

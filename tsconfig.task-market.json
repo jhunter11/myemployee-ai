@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src/task-market",
+    "outDir": "dist-task-market",
+    "sourceMap": false
+  },
+  "include": ["src/task-market/**/*.ts"],
+  "exclude": ["node_modules", "dist", "dist-task-market", "coverage", "tests", "skills"]
+}

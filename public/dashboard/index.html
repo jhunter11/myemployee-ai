@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0f14" />
+    <title>Jarvis Control Room</title>
+    <link rel="icon" href="/dashboard/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/dashboard/assets/styles.css" />
+    <script src="/dashboard/assets/navigation.js" defer></script>
+    <script src="/dashboard/assets/revenue-widget.js" defer></script>
+    <script src="/dashboard/assets/dashboard-core.js" defer></script>
+    <script src="/dashboard/assets/widget-registry.js" defer></script>
+    <script src="/dashboard/assets/layout-grid.js" defer></script>
+    <script src="/dashboard/assets/graph-view.js" defer></script>
+    <script src="/dashboard/assets/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Jarvis operator sidebar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">J</span>
+          <div>
+            <p class="brand-name">JARVIS</p>
+            <p class="brand-caption">Operator system</p>
+          </div>
+        </div>
+        <section class="scope-switcher" aria-labelledby="scope-heading">
+          <p id="scope-heading" class="nav-label">Active control sleeve</p>
+          <div class="scope-readout">
+            <span class="scope-sigil" id="active-scope-sigil" aria-hidden="true">P</span>
+            <span
+              ><strong id="active-scope-name">Personal</strong
+              ><small id="active-scope-detail">Private sleeve · local</small></span
+            >
+          </div>
+        </section>
+        <section class="sidebar-status" aria-labelledby="connection-heading">
+          <p id="connection-heading" class="nav-label">System link</p>
+          <p>
+            <span class="status-dot" id="connection-dot" aria-hidden="true"></span
+            ><span id="connection-status">Loading local read model</span>
+          </p>
+          <p class="quiet">Private loopback · no public listener</p>
+        </section>
+      </aside>
+
+      <div class="workspace">
+        <nav class="tab-bar" aria-label="Control Room tabs">
+          <a class="tab-button" href="/dashboard?view=home" data-view-target="home">Main board</a>
+          <a class="tab-button" href="/dashboard?view=chat" data-view-target="chat">Ask Jarvis</a>
+          <a class="tab-button" href="/dashboard?view=runs" data-view-target="runs">Agent runs</a>
+          <a class="tab-button" href="/dashboard?view=pnl" data-view-target="pnl">P&amp;L</a>
+          <a class="tab-button" href="/dashboard?view=queue" data-view-target="queue">Work queue</a>
+          <a class="tab-button" href="/dashboard?view=agency" data-view-target="agency"
+            >Agent floor</a
+          >
+          <span class="tab-divider" aria-hidden="true"></span>
+          <a class="tab-button" href="/dashboard?view=today" data-view-target="today">Today</a>
+          <a class="tab-button" href="/dashboard?view=calendar" data-view-target="calendar"
+            >Calendar</a
+          >
+          <a class="tab-button" href="/dashboard?view=personal" data-view-target="personal"
+            >Personal memory</a
+          >
+          <a class="tab-button" href="/dashboard?view=clients" data-view-target="clients"
+            >Client scopes</a
+          >
+          <a class="tab-button" href="/dashboard?view=growth" data-view-target="growth">Growth</a>
+          <a class="tab-button" href="/dashboard?view=knowledge" data-view-target="knowledge"
+            >Knowledge graph</a
+          >
+          <a class="tab-button" href="/dashboard?view=system" data-view-target="system">Runtime</a>
+          <a class="tab-button" href="/dashboard?view=saved" data-view-target="saved"
+            >Page Studio</a
+          >
+        </nav>
+        <header class="topbar">
+          <div class="topbar-title">
+            <p class="eyebrow" id="view-kicker">Personal command surface</p>
+            <h1 id="view-title" tabindex="-1">Today</h1>
+            <p class="view-summary" id="view-summary">
+              See the day, memory reviews, and agency decisions that need you.
+            </p>
+          </div>
+          <div class="topbar-actions">
+            <div class="refresh-state" aria-label="Dashboard refresh state">
+              <span class="refresh-mode" id="refresh-mode">Loading local sources</span>
+              <span class="refresh-detail" id="refresh-detail"
+                >Waiting for the current operator snapshot.</span
+              >
+              <time class="refreshed-at" id="refreshed-at">No snapshot yet</time>
+            </div>
+            <a class="button button-secondary ask-jarvis-button" href="/dashboard?view=chat"
+              >Ask Jarvis</a
+            >
+            <button class="button icon-button" id="refresh-button" type="button">
+              Refresh data
+            </button>
+          </div>
+        </header>
+
+        <main id="main-content" tabindex="-1">
+          <p
+            class="sr-only"
+            id="announcements"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+
+          <section class="operator-context" aria-label="Current operating context">
+            <div class="context-card" id="decision-context">
+              <span class="context-label">Next safe decision</span>
+              <strong id="context-decision">Loading the durable queue</strong>
+              <span id="context-decision-detail">No action has been selected.</span>
+              <a class="context-link" id="context-decision-link" href="/dashboard?view=queue"
+                >Open Queue</a
+              >
+            </div>
+            <div class="context-card" id="posture-context">
+              <span class="context-label">Core posture</span>
+              <strong id="context-posture">Checking readiness</strong>
+              <span id="context-posture-detail">Waiting for the bounded health snapshot.</span>
+              <a class="context-link" href="/dashboard?view=system">Inspect system</a>
+            </div>
+            <div class="context-card">
+              <span class="context-label">Control mode</span>
+              <strong>Guarded autonomy</strong>
+              <span>Only reversible internal work can run; external effects stay gated.</span>
+              <span class="context-boundary">Loopback · tenant-safe summaries</span>
+              <a class="context-link" href="/dashboard?view=system">Review controls</a>
+            </div>
+          </section>
+
+          <section class="view is-active" data-view="home" aria-labelledby="view-title">
+            <section class="panel" aria-labelledby="board-heading">
+              <div class="panel-header">
+                <div>
+                  <h2 id="board-heading">Composed board</h2>
+                  <p class="panel-state" id="board-lock-note">
+                    Unlocked. Resize, reorder, or remove tiles, then lock to protect the layout.
+                  </p>
+                </div>
+                <div class="board-actions">
+                  <button
+                    class="button button-secondary"
+                    id="board-reset"
+                    type="button"
+                    aria-label="Reset board to the default layout"
+                  >
+                    Reset
+                  </button>
+                  <button class="button" id="board-lock" type="button" aria-pressed="false">
+                    Lock board
+                  </button>
+                </div>
+              </div>
+              <div class="board-add" id="board-add"></div>
+            </section>
+            <div class="board-grid" id="home-board">
+              <p class="panel-state">Loading the composed board…</p>
+            </div>
+          </section>
+
+          <section class="view" data-view="pnl" aria-labelledby="view-title" hidden>
+            <section class="panel" aria-labelledby="pnl-heading">
+              <div class="panel-header">
+                <div>
+                  <h2 id="pnl-heading">Profit and loss</h2>
+                  <p class="panel-state">
+                    Expenses per sleeve and system-wide, counted only where dollars are known.
+                  </p>
+                </div>
+              </div>
+              <div id="pnl-body"><p class="panel-state">Loading the P&amp;L projection…</p></div>
+            </section>
+          </section>
+
+          <section class="view" data-view="today" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Daily briefing</p>
+                <p id="today-headline">Loading today’s bounded personal and agency context…</p>
+              </div>
+              <span class="status-badge neutral" id="calendar-mode">Local calendar</span>
+            </div>
+            <div
+              class="instrument-strip"
+              id="today-metrics"
+              role="region"
+              aria-label="Today metrics"
+            >
+              <p class="panel-state">Loading briefing metrics…</p>
+            </div>
+            <div class="jarvis-home-grid">
+              <section class="panel" aria-labelledby="today-events-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Next</p>
+                    <h2 id="today-events-heading">Today’s calendar</h2>
+                  </div>
+                </div>
+                <div id="today-events"><p class="panel-state">Loading events…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="today-decisions-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Needs you</p>
+                    <h2 id="today-decisions-heading">Agency decisions</h2>
+                  </div>
+                </div>
+                <div id="today-decisions"><p class="panel-state">Loading decisions…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="today-memory-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Private</p>
+                    <h2 id="today-memory-heading">Memory reviews</h2>
+                  </div>
+                </div>
+                <div id="today-memory"><p class="panel-state">Loading reviews…</p></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="chat" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Bounded command service</p>
+                <p>
+                  Talk to Jarvis through a selected subscription, or inspect one exact specialist
+                  profile. Runtime limits and external-send boundaries remain explicit.
+                </p>
+              </div>
+              <span class="status-badge neutral">Exact-agent routing</span>
+            </div>
+            <section
+              class="model-runtime-panel"
+              aria-labelledby="model-runtime-heading"
+              aria-describedby="model-runtime-status"
+            >
+              <header class="model-runtime-heading">
+                <div>
+                  <p class="eyebrow">Model connection</p>
+                  <h2 id="model-runtime-heading">Claude and OpenAI / ChatGPT</h2>
+                </div>
+                <span class="status-badge neutral" id="model-runtime-badge">Checking locally</span>
+              </header>
+              <div class="model-runtime-providers" id="model-runtime-providers">
+                <p class="panel-state">Checking redacted subscription status…</p>
+              </div>
+              <div class="model-runtime-footer">
+                <p id="model-runtime-status" class="form-status" aria-live="polite">
+                  Connect locally, then explicitly choose the subscription Jarvis should use.
+                </p>
+                <button
+                  class="button button-secondary"
+                  id="model-runtime-disable"
+                  type="button"
+                  hidden
+                >
+                  Use deterministic mode
+                </button>
+              </div>
+            </section>
+            <nav class="agent-mobile-toolbar" aria-label="Agent workbench sections">
+              <a id="agent-mobile-agents" href="#agent-tree">Agents</a>
+              <a id="agent-mobile-chats" href="#agent-conversation-list">Chats</a>
+              <a id="agent-mobile-profile" href="#agent-profile-inspector">Profile</a>
+            </nav>
+            <div class="agent-workbench">
+              <aside class="agent-explorer" aria-labelledby="agent-explorer-heading">
+                <div class="agent-explorer-heading">
+                  <div>
+                    <p class="eyebrow">Workspace explorer</p>
+                    <h2 id="agent-explorer-heading">Agents and chats</h2>
+                  </div>
+                  <button
+                    class="button button-secondary"
+                    id="agent-new-conversation"
+                    type="button"
+                    aria-controls="agent-conversation-list"
+                  >
+                    New chat
+                  </button>
+                </div>
+                <section class="agent-explorer-section" aria-labelledby="agent-tree-heading">
+                  <div class="agent-section-heading">
+                    <h3 id="agent-tree-heading">Agent tree</h3>
+                    <span id="agent-selected-label" class="count-pill" aria-label="Selected agent"
+                      >Jarvis</span
+                    >
+                  </div>
+                  <div id="agent-tree" class="agent-tree" aria-labelledby="agent-tree-heading">
+                    <p class="panel-state">Loading the bounded agent hierarchy…</p>
+                  </div>
+                </section>
+                <section
+                  class="agent-explorer-section agent-conversations"
+                  aria-labelledby="agent-conversations-heading"
+                >
+                  <div class="agent-section-heading">
+                    <h3 id="agent-conversations-heading">Jarvis chats</h3>
+                  </div>
+                  <div
+                    id="agent-conversation-list"
+                    class="agent-conversation-list"
+                    aria-labelledby="agent-conversations-heading"
+                  >
+                    <p class="panel-state">This local session is ready.</p>
+                  </div>
+                </section>
+              </aside>
+              <section
+                class="panel chat-shell agent-chat-pane"
+                aria-labelledby="agent-chat-heading"
+              >
+                <header class="agent-chat-header">
+                  <div>
+                    <p class="eyebrow">Personal coordinator · direct conversation</p>
+                    <h2 id="agent-chat-heading" tabindex="-1">Jarvis</h2>
+                    <p class="agent-breadcrumb">You / Jarvis</p>
+                  </div>
+                  <span class="status-badge neutral" id="agent-runtime-badge"
+                    >Deterministic · local</span
+                  >
+                </header>
+                <div
+                  class="chat-transcript"
+                  id="chat-transcript"
+                  aria-label="Jarvis conversation"
+                ></div>
+                <form id="chat-form" class="chat-form">
+                  <label for="chat-message">Message Jarvis directly</label>
+                  <div class="chat-compose">
+                    <textarea
+                      id="chat-message"
+                      rows="3"
+                      maxlength="2000"
+                      aria-describedby="chat-target-boundary chat-status"
+                      placeholder="What needs my attention today?"
+                    ></textarea>
+                    <button class="button" id="chat-send" type="submit">Send</button>
+                  </div>
+                  <p id="chat-target-boundary" class="agent-target-boundary">
+                    Target: Jarvis · personal and shared-approved evidence only
+                  </p>
+                  <p id="chat-status" class="form-status">
+                    Try today, calendar, personal memory, agency status, or saved pages.
+                  </p>
+                </form>
+              </section>
+              <aside
+                class="agent-profile-inspector"
+                id="agent-profile-inspector"
+                aria-labelledby="agent-profile-heading"
+              >
+                <p class="eyebrow">Selected agent</p>
+                <h2 id="agent-profile-heading">Jarvis profile</h2>
+                <dl class="boundary-list">
+                  <div>
+                    <dt>Purpose</dt>
+                    <dd>Personal coordination and synthesis</dd>
+                  </div>
+                  <div>
+                    <dt>Runtime</dt>
+                    <dd>Deterministic local responder</dd>
+                  </div>
+                  <div>
+                    <dt>Sleeves</dt>
+                    <dd>Personal + shared-approved</dd>
+                  </div>
+                  <div>
+                    <dt>Authority</dt>
+                    <dd>Read and propose only</dd>
+                  </div>
+                </dl>
+                <p class="boundary-note">
+                  Agency and child-agent transcripts require an explicit, cited handoff. Client
+                  sleeves are never inferred from free text.
+                </p>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" data-view="calendar" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Calendar projection</p>
+                <p>Read and detect conflicts locally. Provider writes remain approval-gated.</p>
+              </div>
+              <span class="status-badge neutral" id="calendar-provider-status">Local demo</span>
+            </div>
+            <div
+              class="instrument-strip"
+              id="calendar-metrics"
+              role="region"
+              aria-label="Calendar metrics"
+            >
+              <p class="panel-state">Loading calendar metrics…</p>
+            </div>
+            <section
+              class="panel calendar-suggestion"
+              aria-labelledby="calendar-suggestion-heading"
+            >
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Proposed, not written</p>
+                  <h2 id="calendar-suggestion-heading">Next focus block</h2>
+                </div>
+              </div>
+              <div id="calendar-suggestion">
+                <p class="panel-state">Finding a conflict-free block…</p>
+              </div>
+            </section>
+            <section class="panel" aria-labelledby="calendar-events-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Agenda</p>
+                  <h2 id="calendar-events-heading">Events</h2>
+                </div>
+              </div>
+              <div id="calendar-events"><p class="panel-state">Loading events…</p></div>
+            </section>
+          </section>
+
+          <section class="view" data-view="personal" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Personal trust domain</p>
+                <p>
+                  Inspectable memories with provenance and review dates; never available to agency
+                  workers.
+                </p>
+              </div>
+              <span class="status-badge neutral">Private · loopback</span>
+            </div>
+            <div class="memory-branch-grid" id="personal-memory-tree">
+              <p class="panel-state">Loading private memory branches…</p>
+            </div>
+          </section>
+
+          <section class="view" data-view="agency" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Agency command center</p>
+                <p>
+                  Internal reversible work may run; external or privileged effects require approval.
+                </p>
+              </div>
+              <span class="status-badge neutral" id="agency-posture">Loading posture</span>
+            </div>
+            <div
+              class="instrument-strip"
+              id="agency-metrics"
+              role="region"
+              aria-label="Agency control metrics"
+            >
+              <p class="panel-state">Loading agency control counts…</p>
+            </div>
+            <section class="control-topology" aria-labelledby="control-topology-heading">
+              <div class="topology-heading">
+                <div>
+                  <p class="eyebrow">Authority map</p>
+                  <h2 id="control-topology-heading">Durable coordinator outline</h2>
+                </div>
+                <span class="status-badge neutral">No implicit memory inheritance</span>
+              </div>
+              <nav
+                class="topology-tree"
+                id="agent-floor-tree"
+                aria-label="Durable Jarvis coordinator outline"
+              ></nav>
+            </section>
+            <section class="agent-registry" aria-labelledby="agent-registry-heading">
+              <div class="agent-registry-heading">
+                <div>
+                  <p class="eyebrow">Runtime registry</p>
+                  <h2 id="agent-registry-heading">Agents by purpose and operating time</h2>
+                </div>
+                <div class="agent-sort-state">
+                  <strong>Grouped by purpose</strong>
+                  <span>Runtime and cost sorting unlock when observed telemetry exists.</span>
+                </div>
+              </div>
+              <details class="agent-registry-details" id="agent-registry-details">
+                <summary>
+                  <span>Browse full profile directory</span>
+                  <span id="agent-registry-disclosure-count">Loading profiles</span>
+                </summary>
+                <div
+                  class="agent-table"
+                  id="agent-floor-registry"
+                  role="table"
+                  aria-label="Registered agents"
+                ></div>
+              </details>
+            </section>
+            <div class="jarvis-home-grid">
+              <section class="panel" aria-labelledby="agency-autonomous-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Preapproved</p>
+                    <h2 id="agency-autonomous-heading">Autonomous</h2>
+                  </div>
+                </div>
+                <div id="agency-autonomous"><p class="panel-state">Loading work…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="agency-approval-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Operator gate</p>
+                    <h2 id="agency-approval-heading">Approval required</h2>
+                  </div>
+                </div>
+                <div id="agency-approval"><p class="panel-state">Loading approvals…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="agency-blocked-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Paused</p>
+                    <h2 id="agency-blocked-heading">Blocked</h2>
+                  </div>
+                </div>
+                <div id="agency-blocked"><p class="panel-state">Loading blocked work…</p></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="queue" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Operator focus</p>
+                <p>One ordered place to decide what Jarvis should do next—and why.</p>
+              </div>
+              <span class="status-badge" id="health-badge">Loading health</span>
+            </div>
+            <div
+              class="instrument-strip"
+              id="overview-metrics"
+              tabindex="0"
+              role="region"
+              aria-label="Queue metrics"
+            >
+              <p class="panel-state">Loading the operator read model…</p>
+            </div>
+            <div class="queue-toolbar" aria-label="Revenue lane filter">
+              <div class="lane-switcher" role="group" aria-label="Revenue lane">
+                <button class="lane-button is-active" type="button" data-lane="agency">
+                  Agency
+                </button>
+                <button class="lane-button" type="button" data-lane="task_market">
+                  Task market
+                </button>
+              </div>
+              <p class="queue-legend"><span>P0</span> urgent · <span>P3</span> planned</p>
+            </div>
+            <div class="queue-workspace">
+              <section class="panel queue-list" id="queue-list" aria-labelledby="attention-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Durable order</p>
+                    <h2 id="attention-heading">Ordered work</h2>
+                  </div>
+                  <span id="attention-count" class="count-pill">—</span>
+                </div>
+                <div id="attention-list"><p class="panel-state">Loading attention…</p></div>
+              </section>
+              <aside
+                class="panel queue-inspector"
+                id="queue-inspector"
+                aria-labelledby="queue-inspector-heading"
+              >
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Selection</p>
+                    <h2 id="queue-inspector-heading">Work inspector</h2>
+                  </div>
+                </div>
+                <div id="queue-inspector-content">
+                  <p class="panel-state">Select a work item to inspect its scope and ordering.</p>
+                </div>
+                <div class="queue-evidence">
+                  <section aria-labelledby="improvement-snapshot-heading">
+                    <p class="eyebrow">Improvement signals</p>
+                    <h3 id="improvement-snapshot-heading">Automation candidates</h3>
+                    <div id="improvement-snapshot">
+                      <p class="panel-state">Loading proposals…</p>
+                    </div>
+                  </section>
+                  <section aria-labelledby="economics-snapshot-heading">
+                    <p class="eyebrow">Model economics</p>
+                    <h3 id="economics-snapshot-heading">Cost evidence</h3>
+                    <div id="economics-snapshot">
+                      <p class="panel-state">Loading usage coverage…</p>
+                    </div>
+                  </section>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" data-view="clients" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Tenant portfolio</p>
+                <p>
+                  Recent client profiles and lifecycle state. Tenant-private notes are intentionally
+                  excluded.
+                </p>
+              </div>
+              <span class="count-pill" id="client-total">—</span>
+            </div>
+            <div class="card-grid" id="clients-list">
+              <p class="panel-state">Loading clients…</p>
+            </div>
+          </section>
+
+          <section class="view" data-view="runs" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Execution evidence</p>
+                <p>
+                  Bounded operational summaries; run inputs, outputs, and raw errors never appear
+                  here.
+                </p>
+              </div>
+            </div>
+            <div class="metric-grid compact" id="run-counts">
+              <p class="panel-state">Loading run counts…</p>
+            </div>
+            <section class="panel" aria-labelledby="recent-runs-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Most recent</p>
+                  <h2 id="recent-runs-heading">Automation activity</h2>
+                </div>
+              </div>
+              <div id="runs-list"><p class="panel-state">Loading runs…</p></div>
+            </section>
+          </section>
+
+          <section class="view" data-view="system" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Runtime and economics</p>
+                <p>
+                  Observed usage and explicitly labeled cost evidence. Missing prices remain
+                  unknown, never zero.
+                </p>
+              </div>
+              <span class="status-badge neutral" id="economics-badge">Loading telemetry</span>
+            </div>
+            <section class="panel health-panel" aria-labelledby="system-health-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Bounded health evidence</p>
+                  <h2 id="system-health-heading">System posture</h2>
+                </div>
+                <span class="status-badge neutral" id="system-health-badge">Checking</span>
+              </div>
+              <p class="health-summary" id="system-health-summary">
+                Waiting for the current local health snapshot.
+              </p>
+              <dl class="health-evidence" id="system-health-evidence"></dl>
+            </section>
+            <div class="metric-grid" id="economics-metrics">
+              <p class="panel-state">Loading economics…</p>
+            </div>
+            <div class="dashboard-grid economics-layout">
+              <section class="panel" aria-labelledby="economics-routing-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Measured requests</p>
+                    <h2 id="economics-routing-heading">Routing mix</h2>
+                  </div>
+                </div>
+                <div id="economics-routing"><p class="panel-state">Loading routes…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="economics-models-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Bounded metadata</p>
+                    <h2 id="economics-models-heading">Model activity</h2>
+                  </div>
+                </div>
+                <div id="economics-models"><p class="panel-state">Loading models…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="economics-policy-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Work per dollar</p>
+                    <h2 id="economics-policy-heading">Routing policy</h2>
+                  </div>
+                </div>
+                <div id="economics-policy" class="policy-list">
+                  <p><strong>Tier 0</strong><span>Deterministic work · zero model calls</span></p>
+                  <p>
+                    <strong>Tier 1–3</strong
+                    ><span>Logical local → economy → frontier escalation</span>
+                  </p>
+                  <p>
+                    <strong>Current mode</strong
+                    ><span>Simulation only; provider execution disabled</span>
+                  </p>
+                  <p>
+                    <strong>Context</strong><span>Required-first, deduplicated, hard-budgeted</span>
+                  </p>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="knowledge" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Validated memory</p>
+                <p>
+                  Explore the global Markdown memory or a bounded structural map of this harness.
+                  Private client notes are never served.
+                </p>
+              </div>
+              <div class="graph-source-switcher" role="group" aria-label="Graph source">
+                <button
+                  class="graph-source-button is-active"
+                  id="graph-source-memory"
+                  type="button"
+                  data-graph-source="memory"
+                  aria-pressed="true"
+                >
+                  Memory
+                </button>
+                <button
+                  class="graph-source-button"
+                  id="graph-source-code"
+                  type="button"
+                  data-graph-source="code"
+                  aria-pressed="false"
+                >
+                  Code · Graphify
+                </button>
+              </div>
+            </div>
+
+            <section class="panel graph-workspace" aria-labelledby="graph-workspace-heading">
+              <header class="graph-toolbar">
+                <div>
+                  <p class="eyebrow">Interactive map</p>
+                  <h2 id="graph-workspace-heading">Memory constellation</h2>
+                  <p class="graph-source-status" id="graph-source-status">
+                    Loading the validated Markdown graph…
+                  </p>
+                </div>
+                <div class="graph-actions" aria-label="Graph viewport controls">
+                  <button
+                    class="button button-secondary"
+                    id="graph-zoom-out"
+                    type="button"
+                    aria-label="Zoom graph out"
+                  >
+                    −
+                  </button>
+                  <button
+                    class="button button-secondary"
+                    id="graph-zoom-in"
+                    type="button"
+                    aria-label="Zoom graph in"
+                  >
+                    +
+                  </button>
+                  <button class="button button-secondary" id="graph-fit" type="button">
+                    Fit graph
+                  </button>
+                </div>
+              </header>
+              <div class="graph-filter-row">
+                <label class="search-field" for="graph-search"
+                  ><span>Search this graph</span
+                  ><input
+                    id="graph-search"
+                    type="search"
+                    placeholder="Title, path, type, relation, or node ID"
+                    autocomplete="off"
+                /></label>
+                <div class="memory-stats" id="memory-stats">Loading graph…</div>
+              </div>
+              <div class="graph-stage" id="graph-stage">
+                <canvas class="graph-canvas" id="graph-canvas" aria-hidden="true"></canvas>
+                <div class="graph-stage-state" id="graph-canvas-state">
+                  <p>Loading the validated Markdown topology…</p>
+                </div>
+                <div class="graph-legend" aria-hidden="true">
+                  <span><i class="graph-legend-node"></i>Node</span>
+                  <span><i class="graph-legend-link"></i>Relationship</span>
+                </div>
+              </div>
+              <p class="graph-instructions">
+                Drag the background to pan, use the wheel or controls to zoom, drag a node to move
+                it, and select nodes through the results below.
+              </p>
+            </section>
+
+            <div class="dashboard-grid memory-layout">
+              <section class="panel" aria-labelledby="graph-nodes-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Accessible explorer</p>
+                    <h2 id="graph-nodes-heading">Search results</h2>
+                  </div>
+                  <span class="count-pill" id="graph-results-summary">Waiting</span>
+                </div>
+                <div id="graph-nodes"><p class="panel-state">Loading nodes…</p></div>
+              </section>
+              <section class="panel" aria-labelledby="graph-neighbors-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Selected node</p>
+                    <h2 id="graph-neighbors-heading">Relationships</h2>
+                  </div>
+                </div>
+                <div id="graph-neighbors">
+                  <p class="panel-state">Choose a node to inspect its relationships.</p>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" data-view="growth" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Commercial review</p>
+                <p>
+                  Move identified or qualified prospects toward a signed pilot and validate the
+                  task-market offer without overstating revenue.
+                </p>
+              </div>
+              <span class="status-badge neutral">No send or payment actions</span>
+            </div>
+            <div
+              class="instrument-strip"
+              id="growth-metrics"
+              tabindex="0"
+              role="region"
+              aria-label="Growth metrics"
+            >
+              <p class="panel-state">Loading the fixed revenue read model…</p>
+            </div>
+            <section class="panel growth-next" aria-labelledby="growth-next-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Operator gate</p>
+                  <h2 id="growth-next-heading">Next gated move</h2>
+                </div>
+              </div>
+              <div id="growth-next">
+                <p class="panel-state">Loading the next safe action…</p>
+              </div>
+            </section>
+            <div class="growth-grid">
+              <section class="panel pipeline-panel" aria-labelledby="agency-pipeline-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Agency lane</p>
+                    <h2 id="agency-pipeline-heading">First-client pipeline</h2>
+                  </div>
+                  <span class="count-pill" id="agency-pipeline-count">—</span>
+                </div>
+                <div id="agency-pipeline">
+                  <p class="panel-state">Loading bounded prospects and proposed offers…</p>
+                </div>
+              </section>
+              <section class="panel pipeline-panel" aria-labelledby="task-market-pipeline-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Task-market lane</p>
+                    <h2 id="task-market-pipeline-heading">A2A + x402 simulation</h2>
+                  </div>
+                  <span class="count-pill" id="task-market-state">—</span>
+                </div>
+                <div id="task-market-pipeline">
+                  <p class="panel-state">Loading contract and simulation evidence…</p>
+                </div>
+              </section>
+            </div>
+            <section class="growth-improvements" aria-labelledby="toolsmith-growth-heading">
+              <div class="view-intro compact-intro">
+                <div>
+                  <p class="eyebrow">Repeatable leverage</p>
+                  <h2 id="toolsmith-growth-heading">ToolSmith proposals</h2>
+                </div>
+                <span class="status-badge neutral">Review only</span>
+              </div>
+              <div id="improvements-list">
+                <p class="panel-state">Loading ToolSmith proposals…</p>
+              </div>
+            </section>
+            <p class="safety-callout">
+              Proposed pipeline is not recognized revenue. Outreach, forms, calls, wallet use, and
+              payment remain blocked until an operator reviews one exact action.
+            </p>
+          </section>
+
+          <section class="view" data-view="saved" aria-labelledby="view-title" hidden>
+            <div class="view-intro">
+              <div>
+                <p class="eyebrow">Operator page workflow</p>
+                <p>
+                  Publish only reviewed, declarative operator pages backed by existing same-origin
+                  read models.
+                </p>
+              </div>
+            </div>
+            <div class="pages-layout">
+              <section class="panel saved-pages" aria-labelledby="saved-pages-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Markdown graph</p>
+                    <h2 id="saved-pages-heading">Published pages</h2>
+                  </div>
+                  <span class="count-pill" id="saved-page-count">—</span>
+                </div>
+                <div id="saved-pages-list"><p class="panel-state">Loading saved pages…</p></div>
+              </section>
+              <section class="panel page-canvas" aria-labelledby="page-canvas-heading">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Declarative renderer</p>
+                    <h2 id="page-canvas-heading">Page canvas</h2>
+                  </div>
+                </div>
+                <div id="page-canvas">
+                  <p class="panel-state">
+                    Select a published page to render its allowlisted widgets.
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <section class="studio" aria-labelledby="studio-heading">
+              <div class="studio-heading">
+                <div>
+                  <p class="eyebrow">Tier 0 planning</p>
+                  <h2 id="studio-heading">Page Studio</h2>
+                  <p>
+                    Describe an operator page. Jarvis maps your request to the code and dashboard
+                    capabilities before anything is published.
+                  </p>
+                </div>
+                <span class="token-free">No model tokens</span>
+              </div>
+              <form id="page-request-form" novalidate>
+                <label for="page-request">What page would help you operate the agency?</label>
+                <div
+                  class="template-grid"
+                  id="page-template-list"
+                  aria-label="Quick-start page templates"
+                >
+                  <p class="panel-state">Loading validated page templates…</p>
+                </div>
+                <div class="dictation-row">
+                  <textarea
+                    id="page-request"
+                    name="request"
+                    rows="5"
+                    minlength="8"
+                    maxlength="2000"
+                    placeholder="For example: Create a health, clients, and runs page for operations"
+                  ></textarea>
+                  <div class="dictation-controls">
+                    <button
+                      class="button button-secondary"
+                      id="dictation-button"
+                      type="button"
+                      aria-pressed="false"
+                    >
+                      Start dictation
+                    </button>
+                    <p id="dictation-status" class="quiet" aria-live="polite">
+                      Typed input is always available.
+                    </p>
+                  </div>
+                </div>
+                <p class="privacy-note">
+                  Jarvis stores no audio. Some browsers may send microphone audio to their own
+                  recognition service. Only text you choose to preview is sent to Jarvis.
+                </p>
+                <div class="form-actions">
+                  <button class="button" id="preview-button" type="submit">Preview mapping</button>
+                  <p id="page-form-status" class="form-status"></p>
+                </div>
+              </form>
+              <div id="page-plan" class="page-plan">
+                <p class="panel-state">
+                  Preview a request to inspect the mapped capabilities, gaps, and checks.
+                </p>
+              </div>
+            </section>
+          </section>
+        </main>
+      </div>
+      <nav class="mobile-command-bar" aria-label="Primary mobile navigation">
+        <!-- Mirrors the landing page: the composed board is the first primary,
+             and Today moves into More alongside the other single-purpose tabs. -->
+        <a href="/dashboard?view=home" data-view-target="home" data-mobile-primary="home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 4h7v7H4Zm9 0h7v4h-7Zm0 6h7v10h-7ZM4 13h7v7H4Z" />
+          </svg>
+          <span>Board</span>
+        </a>
+        <a href="/dashboard?view=chat" data-view-target="chat" data-mobile-primary="chat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v11H9l-4 4Z" /></svg>
+          <span>Jarvis</span>
+        </a>
+        <a href="/dashboard?view=queue" data-view-target="queue" data-mobile-primary="queue">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9" /></svg>
+          <span>Work</span>
+        </a>
+        <a href="/dashboard?view=agency" data-view-target="agency" data-mobile-primary="agency">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="7" r="3" />
+            <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
+          </svg>
+          <span>Agents</span>
+        </a>
+        <details class="mobile-more">
+          <summary>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="5" cy="12" r="1" />
+              <circle cx="12" cy="12" r="1" />
+              <circle cx="19" cy="12" r="1" />
+            </svg>
+            <span>More</span>
+          </summary>
+          <div class="mobile-more-menu">
+            <p>Personal</p>
+            <a href="/dashboard?view=today" data-view-target="today">Today</a>
+            <a href="/dashboard?view=calendar" data-view-target="calendar">Calendar</a>
+            <a href="/dashboard?view=personal" data-view-target="personal">Personal memory</a>
+            <p>Agency</p>
+            <a href="/dashboard?view=runs" data-view-target="runs">Agent runs</a>
+            <a href="/dashboard?view=pnl" data-view-target="pnl">P&amp;L</a>
+            <a href="/dashboard?view=clients" data-view-target="clients">Client scopes</a>
+            <a href="/dashboard?view=growth" data-view-target="growth">Growth</a>
+            <p>System</p>
+            <a href="/dashboard?view=knowledge" data-view-target="knowledge">Knowledge graph</a>
+            <a href="/dashboard?view=system" data-view-target="system">Runtime</a>
+            <a href="/dashboard?view=saved" data-view-target="saved">Page Studio</a>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </body>
+</html>

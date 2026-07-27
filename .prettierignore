@@ -1,0 +1,9 @@
+node_modules
+.reference
+dist
+coverage
+skills/superpowers
+data
+logs
+clients/*/output
+clients/*/memory/*.sqlite

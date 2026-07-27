@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Jarvis Workflows'
+  short_description: 'Route scoped Jarvis operations and revenue work'
+  default_prompt: 'Use $jarvis-workflows to route and safely complete this Jarvis task.'

@@ -1,0 +1,35 @@
+{
+  "_comment": "Per-client least-privilege tool grants. Only the tools listed here are allowed.",
+  "profiles": {
+    "email_only": {
+      "description": "Client needs email read/send only. No shell, no process spawning.",
+      "tools_allow": ["read", "write", "himalaya"],
+      "tools_deny": ["exec", "process", "apply_patch"],
+      "requires_elevated_approval": false
+    },
+    "data_processing": {
+      "description": "Client needs file manipulation and scripted data crunching.",
+      "tools_allow": ["read", "write", "exec"],
+      "tools_deny": ["process"],
+      "exec_scope": "python3,node",
+      "requires_elevated_approval": false
+    },
+    "offline_compute": {
+      "description": "Pinned fixture-only compute. The host runner supplies an immutable source copy and OS-enforced no-network sandbox.",
+      "tools_allow": ["read", "exec"],
+      "tools_deny": ["write", "process", "apply_patch"],
+      "exec_scope": "/usr/bin/python3:pmqs-fixture-backtest-v1",
+      "requires_elevated_approval": false
+    },
+    "full_automation": {
+      "description": "Client needs full exec + process. Requires explicit owner sign-off.",
+      "tools_allow": ["read", "write", "exec", "process", "apply_patch"],
+      "tools_deny": [],
+      "requires_elevated_approval": true,
+      "approval_record": "config/elevated-permissions.json"
+    }
+  },
+  "client_assignments": {
+    "client_a": "email_only"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Jarvis Page Builder'
+  short_description: 'Build verified Jarvis dashboard pages'
+  default_prompt: 'Use $jarvis-page-builder to map my request to Jarvis read models and create a verified dashboard page.'

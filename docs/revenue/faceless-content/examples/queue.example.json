@@ -1,0 +1,70 @@
+[
+  {
+    "itemId": "item-1-account-youtube-main",
+    "variantId": "variant:eefb0071175a5b4271507373bbb0923b8ab599ef885d0088",
+    "accountId": "account-youtube-main",
+    "storyId": "story-memo-from-tomorrow",
+    "assetRef": "render:/Users/operator/faceless/2026-07-25/account-youtube-main.mp4",
+    "assetDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+    "renderManifestDigest": "sha256:fdad0c35d0a1d10c0c1b2a38114a48b1fafd0dbaca5646a07e7b9ff2cdf7f2ca",
+    "metadataRef": "metadata:2026-07-25:account-youtube-main",
+    "finalQcApproved": true,
+    "rightsCleared": true,
+    "disclosure": {
+      "containsGenerativeMedia": true,
+      "realisticSyntheticMedia": false
+    },
+    "priority": 1
+  },
+  {
+    "itemId": "item-2-account-tiktok-main",
+    "variantId": "variant:0016f54fdc41fcd5821de812ebe6d281ecb73d7613ce714d",
+    "accountId": "account-tiktok-main",
+    "storyId": "story-memo-from-tomorrow",
+    "assetRef": "render:/Users/operator/faceless/2026-07-25/account-tiktok-main.mp4",
+    "assetDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000002",
+    "renderManifestDigest": "sha256:a8befcf50a4cc230bf7e6a3687e7b0e8c25309dd1ee3c307ca272e6a8d149820",
+    "metadataRef": "metadata:2026-07-25:account-tiktok-main",
+    "finalQcApproved": true,
+    "rightsCleared": true,
+    "disclosure": {
+      "containsGenerativeMedia": true,
+      "realisticSyntheticMedia": false
+    },
+    "priority": 2
+  },
+  {
+    "itemId": "item-3-account-instagram-alt",
+    "variantId": "variant:803cbab93ce6c5dfeed73eeb15ce28ea3c03c766961dc21c",
+    "accountId": "account-instagram-alt",
+    "storyId": "story-memo-from-tomorrow",
+    "assetRef": "render:/Users/operator/faceless/2026-07-25/account-instagram-alt.mp4",
+    "assetDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000003",
+    "renderManifestDigest": "sha256:d8fdd41a96b5318edc441eb8b03c5e40b7ef58e5441c0a33b93ee402ffd1b987",
+    "metadataRef": "metadata:2026-07-25:account-instagram-alt",
+    "finalQcApproved": true,
+    "rightsCleared": true,
+    "disclosure": {
+      "containsGenerativeMedia": true,
+      "realisticSyntheticMedia": false
+    },
+    "priority": 3
+  },
+  {
+    "itemId": "item-4-account-facebook-alt",
+    "variantId": "variant:24d219ec53dc936311d80ad6fbdccc6998b7fdaf33906103",
+    "accountId": "account-facebook-alt",
+    "storyId": "story-memo-from-tomorrow",
+    "assetRef": "render:/Users/operator/faceless/2026-07-25/account-facebook-alt.mp4",
+    "assetDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000004",
+    "renderManifestDigest": "sha256:4473905cfc7ca7035c032c47063fe8df96d673f049a376264e037cd5632f8d22",
+    "metadataRef": "metadata:2026-07-25:account-facebook-alt",
+    "finalQcApproved": true,
+    "rightsCleared": true,
+    "disclosure": {
+      "containsGenerativeMedia": true,
+      "realisticSyntheticMedia": false
+    },
+    "priority": 4
+  }
+]

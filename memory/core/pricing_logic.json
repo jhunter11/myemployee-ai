@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "currency": "USD",
+  "tiers": {
+    "tier_1_small_business": {
+      "target_revenue_band": "$500k - $2M",
+      "setup_fee": 2500,
+      "monthly_retainer": 500,
+      "features": ["1-2 core automations", "10k API transactions/mo", "Basic triage"]
+    },
+    "tier_2_mid_market": {
+      "target_revenue_band": "$2M - $50M",
+      "setup_fee": 10000,
+      "monthly_retainer": 2000,
+      "features": ["Fully integrated AI workers", "Dynamic scaling", "Priority support SLA"]
+    },
+    "tier_3_performance": {
+      "target_revenue_band": "Variable",
+      "setup_fee": 1000,
+      "performance_fee": "10% of generated revenue or $10/booked call",
+      "features": ["Risk-reversal model", "Unlimited scaling"]
+    }
+  },
+  "cost_basis": {
+    "fixed": ["Base K8s cluster", "Vector DB", "GPU lease"],
+    "variable": ["LLM API tokens", "Spot instances"]
+  }
+}

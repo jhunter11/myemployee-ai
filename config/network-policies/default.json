@@ -1,0 +1,20 @@
+{
+  "_comment": "Per-client Docker network allowlists. 'none' = no network. 'allowlist' = only specified hosts.",
+  "default": {
+    "mode": "none",
+    "description": "Default policy: no network access for new client sandboxes until explicitly granted."
+  },
+  "client_a": {
+    "mode": "allowlist",
+    "allowed_hosts": [
+      "smtp.gmail.com:465",
+      "smtp.gmail.com:587",
+      "imap.gmail.com:993",
+      "sheets.googleapis.com:443",
+      "www.googleapis.com:443",
+      "oauth2.googleapis.com:443"
+    ],
+    "deny_all_other": true,
+    "notes": "Client A: Email + Google Sheets integration only."
+  }
+}

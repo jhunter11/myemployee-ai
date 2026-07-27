@@ -1,0 +1,11 @@
+id,name,email,status
+lead-001,Avery Stone,avery.stone@example.test,qualified
+lead-002,Blair Woods,blair.woods@example.test,new
+lead-003,Casey Brooks,casey.brooks@example.test,qualified
+lead-004,Drew Parker,drew.parker@example.test,contacted
+lead-005,Emerson Lane,emerson.lane@example.test,qualified
+lead-006,Finley Quinn,finley.quinn@example.test,disqualified
+lead-007,Gray Monroe,gray.monroe@example.test,new
+lead-008,Harper Reed,harper.reed@example.test,qualified
+lead-009,Indigo Hayes,indigo.hayes@example.test,contacted
+lead-010,Jordan Ellis,jordan.ellis@example.test,qualified

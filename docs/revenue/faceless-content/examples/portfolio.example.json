@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "portfolioId": "portfolio-midnight-memos",
+  "binding": {
+    "kind": "client",
+    "scopeId": "client:creator_lab"
+  },
+  "emailGroupId": "email_group:111111111111111111111111111111111111111111111111",
+  "providerProfileRef": "publisher-profile:midnight-memos",
+  "accounts": [
+    {
+      "accountId": "account-youtube-main",
+      "platform": "youtube",
+      "placement": "shorts",
+      "publicLabel": "@midnightmemos",
+      "connection": {
+        "connectionId": "social_youtube_main",
+        "providerKey": "zernio",
+        "credentialRef": "secretref:keychain:social_youtube_main",
+        "state": "active",
+        "version": 1
+      },
+      "role": "primary",
+      "audience": "English-language speculative mystery viewers.",
+      "allowedLanes": ["short_story", "cinematic_short"]
+    },
+    {
+      "accountId": "account-tiktok-main",
+      "platform": "tiktok",
+      "placement": "reels",
+      "publicLabel": "@midnightmemos",
+      "connection": {
+        "connectionId": "social_tiktok_main",
+        "providerKey": "zernio",
+        "credentialRef": "secretref:keychain:social_tiktok_main",
+        "state": "active",
+        "version": 1
+      },
+      "role": "primary",
+      "audience": "TikTok viewers who watch one-minute mystery stories.",
+      "allowedLanes": ["short_story", "cinematic_short"]
+    },
+    {
+      "accountId": "account-instagram-alt",
+      "platform": "instagram",
+      "placement": "reels",
+      "publicLabel": "@tomorrowarchive",
+      "connection": {
+        "connectionId": "social_instagram_alt",
+        "providerKey": "zernio",
+        "credentialRef": "secretref:keychain:social_instagram_alt",
+        "state": "active",
+        "version": 1
+      },
+      "role": "experiment",
+      "audience": "Visual-fiction and cinematic-art viewers.",
+      "allowedLanes": ["short_story", "cinematic_short"]
+    },
+    {
+      "accountId": "account-facebook-alt",
+      "platform": "facebook",
+      "placement": "reels",
+      "publicLabel": "Tomorrow Archive",
+      "connection": {
+        "connectionId": "social_facebook_alt",
+        "providerKey": "zernio",
+        "credentialRef": "secretref:keychain:social_facebook_alt",
+        "state": "active",
+        "version": 1
+      },
+      "role": "experiment",
+      "audience": "Older mystery and narrated-fiction viewers.",
+      "allowedLanes": ["short_story"]
+    }
+  ]
+}
