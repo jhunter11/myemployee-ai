@@ -1,4 +1,4 @@
-# MyEmployee AI — Jarvis Control Plane
+# Jarvis Control
 
 A fail-closed control plane for a multi-tenant AI automation agency: a durable priority queue,
 tenant-isolated memory, cost-aware model routing, and a 45-profile agent catalog — with every

@@ -343,7 +343,7 @@ const MENU = [
 
 function showMenu() {
   console.log("");
-  console.log(bold("  MYEMPLOYEE AI — Jarvis Control Plane"));
+  console.log(bold("  JARVIS CONTROL"));
   console.log(dim("  Authority is a typed record that must exist before an action is possible."));
   console.log("");
   MENU.forEach(([label, , tag], i) => {
