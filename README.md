@@ -6,6 +6,13 @@ outward-facing action gated behind an explicit, typed authorization record.
 
 **TypeScript · Node 22 · SQLite · 134k lines · 2,238 tests across 209 files, all passing**
 
+```bash
+node explore.mjs
+```
+
+A numbered menu — zero dependencies, works on a bare clone before `npm ci`. It walks
+the five things this system refuses to do and points at the file enforcing each one.
+
 ---
 
 ## The idea
@@ -72,7 +79,8 @@ Requires Node.js 22+ and npm. No API keys needed — model execution is off by d
 dashboard runs on deterministic local data.
 
 ```bash
-npm ci && npm run build && npm test && npm start
+node explore.mjs                                  # the menu; no install needed
+npm ci && npm run build && npm test && npm start  # the real thing
 ```
 
 Then open <http://127.0.0.1:3000/dashboard>. `HOST` must remain loopback; the gateway refuses to
